@@ -2,11 +2,17 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+#include <wiringPi.h>
+#include <softTone.h>
+ 
+#define PIN 28
+
 int endOfSystem = 0;
 int threadfinish1 = 999;
 int threadfinish2 = 999;
+int alert[2] = { 261, 523 };
 
-void transferSignalToBlockModule()
+void transferSignalToBlockModule()//Networking
 {
     while(threadfinish1 && threadfinish2)
     {
@@ -19,12 +25,24 @@ void transferSignalToBlockModule()
 
 int *transferSignalToSystem(void *arg)
 {
-    Transfer Signal to Other System;
+    Transfer Signal to Other System; //Networking
 }
 
 int *alert(void *arg)
 {
-    Speaker Sensor Activation;
+    int i, j = 0;
+    wiringPiSetup() ;
+    softToneCreate(PIN) ;
+    for (i = 0 ; i < 23 ; ++i)
+    {
+        for(j = 0; j < 2; j++)
+        {
+            printf("%3d\n", j) ;
+            softToneWrite(PIN, alert[j]) ;
+            delay(200) ;
+        }
+    }
+    return 1;
 }
 
 int *waveDetection(void *arg)
@@ -44,7 +62,7 @@ int waveSignaltoOtherSystem(void *arg)
     int w_Signal = 0;
     while(w_Signal == 0)
     {
-        if(WaveSignaltoOtherSystem)
+        if(WaveSignaltoOtherSystem)//Networking
         {
             w_Signal = 1;
         }
