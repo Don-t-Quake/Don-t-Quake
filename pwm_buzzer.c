@@ -138,10 +138,12 @@ int main (void) {
 	PWMEnable(0);
 	while (1){ 
 		for (int i = 0; i < 1000; i ++){
+            printf("%d\n", i);
 			PWMWriteDutyCycle(0,i); 
 			usleep(1000);
 		}
 		for (int i = 1000; i > 0; i --){
+            printf("%d\n", i);
 			PWMWriteDutyCycle(0,i); 
 			usleep(1000); 
 		}
