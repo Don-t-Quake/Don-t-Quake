@@ -9,7 +9,8 @@
 #define OUT 1
 #define LOW  0
 #define HIGH 1
-#define POUT 17 
+#define POUT 17
+#define VALUE_MAX 30 
 
 static int GPIOExport(int pin) {
 #define BUFFER_MAX 3
@@ -50,7 +51,6 @@ static int GPIODirection(int pin, int dir) {
 	static const char s_directions_str[]  = "in\0out";
 
 #define DIRECTION_MAX 35
-	//char path[DIRECTION_MAX]="/sys/class/gpio/gpio24/direction";
 	char path[DIRECTION_MAX]="/sys/class/gpio/gpio%d/direction";
 	int fd;
 
@@ -71,36 +71,11 @@ static int GPIODirection(int pin, int dir) {
 	return(0);
 }
 
-static int GPIORead(int pin) {
-#define VALUE_MAX 30
-	char path[VALUE_MAX];
-	char value_str[3];
-	int fd;
-
-	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
-	fd = open(path, O_RDONLY);
-	if (-1 == fd) {
-		fprintf(stderr, "Failed to open gpio value for reading!\n");
-		return(-1);
-	}
-
-	if (-1 == read(fd, value_str, 3)) {
-		fprintf(stderr, "Failed to read value!\n");
-		return(-1);
-	}
-
-	close(fd);
-
-	return(atoi(value_str));
-}
-
 static int GPIOWrite(int pin, int value) {
 	static const char s_values_str[] = "01";
 
 	char path[VALUE_MAX];
 	int fd;
-	
-	printf("write value!\n");
 
 	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
 	fd = open(path, O_WRONLY);
@@ -116,30 +91,26 @@ static int GPIOWrite(int pin, int value) {
 	close(fd);
 	return(0);
 	}
-	printf("write value!!!!!!!!!!!!!!\n");
 }
 
 int main(int argc, char *argv[]) {
-	int repeat = 10000;
+	int repeat = 150;
 	int state = 1;
-	int prev_state = 1;
-	int light = 0;
+	int buzzer = 0;
 
 	if (-1 == GPIOExport(POUT))
 		return(1);
-
+        
 	if (-1 == GPIODirection(POUT, OUT))
 		return(2);
 
 	do {
 		state = 1;
 
-		if(prev_state == 0 && state == 1){
-			light = (light+1)%2;
-			GPIOWrite(POUT, light);
+		if(state == 1){
+			buzzer = (buzzer+1)%2;
+			GPIOWrite(POUT, buzzer);
 		}
-
-		prev_state = state;
 
 		usleep(500 * 100);
 	}
