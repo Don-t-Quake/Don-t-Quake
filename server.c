@@ -85,37 +85,28 @@ int main(int argc, char *argv[])
     else
     {   
         int kk=0;
-        clnt_addr.sin_addr.s_addr = inet_addr("192.168.0.86");
+        int a = listen(serv_sock, 5);
+        if (a == -1)
+            error_handling("listen() error");
+        if (clnt_sock < 0)
+        {
+            clnt_addr_size = sizeof(clnt_addr);
+            clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr,
+                               &clnt_addr_size);
+            printf("%d\n", clnt_addr.sin_addr.s_addr);
+            if (clnt_sock == -1)
+                error_handling("accept() error");
+        }
+        char msg[100]="0";
         while (1)
         {
-            kk++;
-            if (clnt_sock < 0)
+            scanf("%s",msg);
+            write(clnt_sock, msg, sizeof(msg));
+            printf("msg = %s\n", msg);
+            if(!strcmp("1",msg))
             {
-                int a = listen(serv_sock, 5);
-                if (a == -1)
-                    error_handling("listen() error");
-
-                clnt_addr_size = sizeof(clnt_addr);
-                clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr,
-                                   &clnt_addr_size);
-                printf("%d\n", clnt_addr.sin_addr.s_addr);
-                if (clnt_sock == -1)
-                    error_handling("accept() error");
+                break;
             }
-            state = 1;
-            if (state == 1)
-            {
-                char msg[10] = "0";
-                if(kk>10000000)
-                {
-                    strcpy(msg,"1");
-                }
-                write(clnt_sock, msg, sizeof(msg));
-                printf("msg = %s\n", msg);
-                clnt_sock = -1;
-            }
-            prev_state = state;
-            usleep(100);
         }
     }
 
