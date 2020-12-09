@@ -24,6 +24,24 @@ PWMExport(int pwmnum)
 	int bytes_written;
 	int fd;
 
+	fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
+	if (-1 == fd) {
+		fprintf(stderr, "Failed to open in export!\n");
+		return(-1);
+	}
+	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pwmnum);
+	write(fd, buffer, bytes_written);
+	close(fd);
+	return(0);
+}
+static int
+PWMUnExport(int pwmnum)
+{
+#define BUFFER_MAX 3
+	char buffer[BUFFER_MAX];
+	int bytes_written;
+	int fd;
+
 	fd = open("/sys/class/pwm/pwmchip0/unexport", O_WRONLY);
 	if (-1 == fd) {
 		fprintf(stderr, "Failed to open in unexport!\n");
@@ -33,20 +51,27 @@ PWMExport(int pwmnum)
 	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pwmnum);
 	write(fd, buffer, bytes_written);
 	close(fd);
-
-	sleep(1);
-	fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
-	if (-1 == fd) {
-		fprintf(stderr, "Failed to open in export!\n");
-		return(-1);
-	}
-	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pwmnum);
-	write(fd, buffer, bytes_written);
-	close(fd);
-	sleep(1);
-	return(0);
 }
+static int
+PWMUnable(int pwmnum)
+{
+	static const char s_unenable_str[] = "0";
+	static const char s_enable_str[]  = "1";
 
+#define DIRECTION_MAX 45
+	char path[DIRECTION_MAX];
+	int fd;
+
+	snprintf(path, DIRECTION_MAX, "/sys/class/pwm/pwmchip0/pwm%d/enable", pwmnum);
+	fd = open(path, O_WRONLY);
+	if (-1 == fd) {
+		fprintf(stderr, "Failed to open in enable!\n");
+		return -1;
+	}
+
+	write(fd,s_unenable_str,strlen(s_unenable_str));
+	close(fd);
+}
 static int
 PWMEnable(int pwmnum)
 {
@@ -135,6 +160,17 @@ PWMWriteDutyCycle(int pwmnum, int value)
 
 int main(void)
 {
+  PWMExport(0);
+  PWMWritePeriod(0,5000000);
+  PWMWriteDutyCycle(0,0);
+  PWMEnable(0);
+	  PWMWriteDutyCycle(0,300000);
+	 
+  PWMExport(1);
+  PWMWritePeriod(1,5000000);
+  PWMWriteDutyCycle(1,0);
+  PWMEnable(1);
+	  PWMWriteDutyCycle(1,300000); 
   double pos = 5;
   int ttt;
   int sock = socket(PF_INET, SOCK_STREAM, 0);
@@ -162,66 +198,16 @@ int main(void)
     {
       break;
     }
-    //    if (!strcmp("1", msg))
-    //    {
-    //      printf("IIIIIII");
-    //    }
-    //    else
-    //    {
-    //      printf("B\n");
-    //    }
-
   }
   close(sock);
 
-  PWMExport(0);
-  PWMWritePeriod(0,200);
-  PWMWriteDutyCycle(0,0);
-  PWMEnable(0);
-  while(1)
-  {
-    pos=17.5;
-    PWMWriteDutyCycle(0,pos);
-    usleep(3000);
-    pos=5;
-    PWMWriteDutyCycle(0,pos);
-    usleep(1000);
-  }
-  // PWMExport(0); // pwm0 is gpio18 
-	// PWMWritePeriod(0, 20000000); 
-	// PWMWriteDutyCycle(0, 0); 
-	// PWMEnable(0);
-	// while (1){ 
-	// 	for (int i = 0; i < 1000; i ++){
-	// 		PWMWriteDutyCycle(0,i * 10000); 
-	// 		usleep(1000);
-	// 	}
-	// 	for (int i = 1000; i > 0; i --){
-	// 		PWMWriteDutyCycle(0,i * 10000); 
-	// 		usleep(1000); 
-	// 	}
-	// }
+  
+	  PWMWriteDutyCycle(0,1300000);
+	  PWMWriteDutyCycle(1,1300000);
+	  sleep(1);
+	  PWMUnable(0);
+	  PWMUnable(1);
 
-
-  // softPwmCreate(SERVO, 0, 200);
-  // softPwmCreate(SERVO1, 0, 200);
-  // softPwmWrite(SERVO,pos);
-  // delay(1000);
-  // softPwmWrite(SERVO,pos);
-  // delay(1000);
-//  pos=5;
-//  softPwmWrite(SERVO,pos);
-//  delay(1000);
-
-  // pos=5;
-  // softPwmWrite(SERVO1,pos);
-  // delay(1000);
-  // pos=17.5;
-  // softPwmWrite(SERVO1,pos);
-  // delay(1000);
-//  pos=5;
-//  softPwmWrite(SERVO1,pos);
-//  delay(1000);
 
   return 0;
 }
