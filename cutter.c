@@ -174,16 +174,31 @@ int main(void)
   }
   close(sock);
 
-  PWMExport(0);
-  PWMWritePeriod(0,200);
-  PWMWriteDutyCycle(0,0);
-  PWMEnable(0);
-  pos=17.5;
-  PWMWriteDutyCycle(0,pos);
-  usleep(3000);
-  pos=5;
-  PWMWriteDutyCycle(0,pos);
-  usleep(1000);
+  // PWMExport(0);
+  // PWMWritePeriod(0,200);
+  // PWMWriteDutyCycle(0,0);
+  // PWMEnable(0);
+  // pos=17.5;
+  // PWMWriteDutyCycle(0,pos);
+  // usleep(3000);
+  // pos=5;
+  // PWMWriteDutyCycle(0,pos);
+  // usleep(1000);
+  PWMExport(0); // pwm0 is gpio18 
+	PWMWritePeriod(0, 20000000); 
+	PWMWriteDutyCycle(0, 0); 
+	PWMEnable(0);
+	while (1){ 
+		for (int i = 0; i < 1000; i ++){
+			PWMWriteDutyCycle(0,i * 10000); 
+			usleep(1000);
+		}
+		for (int i = 1000; i > 0; i --){
+			PWMWriteDutyCycle(0,i * 10000); 
+			usleep(1000); 
+		}
+	}
+
 
   // softPwmCreate(SERVO, 0, 200);
   // softPwmCreate(SERVO1, 0, 200);
