@@ -178,12 +178,15 @@ int main(void)
   PWMWritePeriod(0,200);
   PWMWriteDutyCycle(0,0);
   PWMEnable(0);
-  pos=17.5;
-  PWMWriteDutyCycle(0,pos);
-  usleep(3000);
-  pos=5;
-  PWMWriteDutyCycle(0,pos);
-  usleep(1000);
+  while(1)
+  {
+    pos=17.5;
+    PWMWriteDutyCycle(0,pos);
+    usleep(3000);
+    pos=5;
+    PWMWriteDutyCycle(0,pos);
+    usleep(1000);
+  }
   // PWMExport(0); // pwm0 is gpio18 
 	// PWMWritePeriod(0, 20000000); 
 	// PWMWriteDutyCycle(0, 0); 
