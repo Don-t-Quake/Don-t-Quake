@@ -23,7 +23,8 @@ int main(void)
   sockip.sin_port = htons(8888);
   do{
     ttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
-  }while(ttt!=-1);
+    printf("ttt=%d\n",ttt);
+  }while(ttt==-1);
   printf("%d\n",ttt);
   char msg[100];
   int kt;
