@@ -7,7 +7,6 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <network.h>
 
 #define IN 0
 #define OUT 1
@@ -26,14 +25,55 @@ void error_handling(char *message)
     exit(1);
 }
 
-int main_socket()
+int detectModule()
 {
-    int state = 1;
-    int prev_state = 1;
     int serv_sock, clnt_sock = -1;
     struct sockaddr_in serv_addr, clnt_addr;
     socklen_t clnt_addr_size;
-    int sock = socket(PF_INET,SOCK_STREAM,0);
+    int sock = socket(PF_INET, SOCK_STREAM, 0);
+
+    serv_sock = socket(PF_INET, SOCK_STREAM, 0);
+    if (serv_sock == -1)
+        error_handling("socket() error");
+
+    memset(&serv_addr, 0, sizeof(serv_addr));
+
+    struct sockaddr_in sockip;
+    sockip.sin_family = AF_INET;
+    sockip.sin_addr.s_addr = inet_addr("192.168.0.87");
+    sockip.sin_port = htons(8888);
+
+    if (bind(serv_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1)
+        error_handling("bind() error");
+
+    while (1)
+    {
+        int ttttttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
+        if (0 == ttttttt)
+        {
+            while (1)
+            {
+                int ttttttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
+                char msg[100];
+                int kt = read(sock, msg, sizeof(msg) - 1);
+                printf("%d\n", kt);
+                printf("%s\n", msg);
+                printf("detect\n");
+            }
+        }
+        else
+        {
+            printf("B\n");
+        }
+    }
+}
+
+int readToOtherSystem()
+{
+    int serv_sock, clnt_sock = -1;
+    struct sockaddr_in serv_addr, clnt_addr;
+    socklen_t clnt_addr_size;
+    int sock = socket(PF_INET, SOCK_STREAM, 0);
 
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
     if (serv_sock == -1)
@@ -44,70 +84,108 @@ int main_socket()
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(8888);
-    
+
     if (bind(serv_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1)
         error_handling("bind() error");
 
-        
-    pid_t pid = fork();
-    if (pid == 0) //child
+    while (1)
     {
-        struct sockaddr_in sockip;
-        sockip.sin_family = AF_INET;
-        sockip.sin_addr.s_addr = inet_addr("192.168.0.87");
-        sockip.sin_port = htons(8888);
-        
-        while(1)
+        int ttttttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
+        if (0 == ttttttt)
         {
-            int ttttttt = connect(sock,(struct sockaddr*)&sockip,sizeof(sockip));
-            if(0==ttttttt)
+            while (1)
             {
-                while(1)
-                {
-                    int ttttttt = connect(sock,(struct sockaddr*)&sockip,sizeof(sockip));
-                    char msg[100];
-                    int kt=read(sock,msg, sizeof(msg)-1);
-                    printf("%d\n",kt);
-                    printf("%s\n",msg);
-                }
+                int ttttttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
+                char msg[100];
+                int kt = read(sock, msg, sizeof(msg) - 1);
+                printf("%d\n", kt);
+                printf("%s\n", msg);
+                printf("Other System\n");
             }
-            else
-            {
-                printf("B\n");
-            }  
+        }
+        else
+        {
+            printf("B\n");
         }
     }
-    else
-    {   
-        clnt_addr.sin_addr.s_addr = inet_addr("192.168.0.86");
-        while (1)
-        {
-            if (clnt_sock < 0)
-            {
-                int a = listen(serv_sock, 5);
-                if (a == -1)
-                    error_handling("listen() error");
+}
 
-                clnt_addr_size = sizeof(clnt_addr);
-                clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr,
-                                   &clnt_addr_size);
-                printf("%d\n", clnt_addr.sin_addr.s_addr);
-                if (clnt_sock == -1)
-                    error_handling("accept() error");
-            }
-            state = 1;
-            if (state == 1)
-            {
-                char msg[10] = "nonchild";
-                write(clnt_sock, msg, sizeof(msg));
-                printf("msg = %s\n", msg);
-                clnt_sock = -1;
-            }
-            prev_state = state;
-            usleep(100);
-        }
+int writeToOtherSystem()
+{
+    int serv_sock, clnt_sock = -1;
+    struct sockaddr_in serv_addr, clnt_addr;
+    socklen_t clnt_addr_size;
+    int sock = socket(PF_INET, SOCK_STREAM, 0);
+
+    serv_sock = socket(PF_INET, SOCK_STREAM, 0);
+    if (serv_sock == -1)
+        error_handling("socket() error");
+
+    memset(&serv_addr, 0, sizeof(serv_addr));
+
+    struct sockaddr_in sockip;
+    sockip.sin_family = AF_INET;
+    sockip.sin_addr.s_addr = inet_addr("192.168.0.74");
+    sockip.sin_port = htons(8888);
+
+    int kk = 0;
+    int a = listen(serv_sock, 5);
+    if (a == -1)
+        error_handling("listen() error");
+    if (clnt_sock < 0)
+    {
+        clnt_addr_size = sizeof(clnt_addr);
+        clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr,
+                           &clnt_addr_size);
+        printf("%d\n", clnt_addr.sin_addr.s_addr);
+        if (clnt_sock == -1)
+            error_handling("accept() error");
     }
+    char msg[100] = "0";
+    while (1)
+    {
+        scanf("%s", msg);
+        write(clnt_sock, msg, sizeof(msg));
+        printf("msg = %s\n", msg);
+    }
+}
 
-    close(serv_sock);
-    return (0);
+int blockModule()
+{
+    int serv_sock, clnt_sock = -1;
+    struct sockaddr_in serv_addr, clnt_addr;
+    socklen_t clnt_addr_size;
+    int sock = socket(PF_INET, SOCK_STREAM, 0);
+
+    serv_sock = socket(PF_INET, SOCK_STREAM, 0);
+    if (serv_sock == -1)
+        error_handling("socket() error");
+
+    memset(&serv_addr, 0, sizeof(serv_addr));
+
+    struct sockaddr_in sockip;
+    sockip.sin_family = AF_INET;
+    sockip.sin_addr.s_addr = inet_addr("192.168.0.86");
+    sockip.sin_port = htons(8888);
+
+    int kk = 0;
+    int a = listen(serv_sock, 5);
+    if (a == -1)
+        error_handling("listen() error");
+    if (clnt_sock < 0)
+    {
+        clnt_addr_size = sizeof(clnt_addr);
+        clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr,
+                           &clnt_addr_size);
+        printf("%d\n", clnt_addr.sin_addr.s_addr);
+        if (clnt_sock == -1)
+            error_handling("accept() error");
+    }
+    char msg[100] = "0";
+    while (1)
+    {
+        scanf("%s", msg);
+        write(clnt_sock, msg, sizeof(msg));
+        printf("msg = %s\n", msg);
+    }
 }
