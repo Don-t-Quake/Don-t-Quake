@@ -48,7 +48,7 @@ void i2c_send_byte(unsigned char data) {
    usleep(1000);
 }
 
-void main_lcd() { 
+void *main_lcd() { 
    i2c_start(); 
 
    usleep(15000);             // wait 15msec

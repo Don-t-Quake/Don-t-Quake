@@ -94,7 +94,7 @@ static int GPIOWrite(int pin, int value) {
 	}
 }
 
-int main_buzzer() {
+int *main_buzzer() {
 	int repeat = 150;
 	int state = 1;
 	int buzzer = 0;
@@ -121,6 +121,6 @@ int main_buzzer() {
 	if (-1 == GPIOUnexport(POUT))
 		return(4);
 
-	return(0);
+	return 119;
 }
 

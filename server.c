@@ -25,12 +25,10 @@ void error_handling(char *message)
     exit(1);
 }
 
-int detectModule()
+int *detectModule()
 {
     int ttt = 999;
     int sock = socket(PF_INET, SOCK_STREAM, 0);
-    printf("%d\n", sock);
-    printf("AAAAA\n");
     char ip[] = "192.168.0.87";
 
     struct sockaddr_in sockip;
@@ -48,26 +46,24 @@ int detectModule()
     char msg[100];
     int kt;
     int i = 0;
-    while (i < 15)
+    while (1))
     {
         kt = read(sock, msg, sizeof(msg) - 1);
         printf("%d\n", kt);
         printf("%s\n", msg);
         if (!strcmp("1", msg))
         {
-            break;
+            close(sock);
+            return 119;
         }
-        i++;
     }
     close(sock);
 }
 
-int readToOtherSystem()
+int *readToOtherSystem()
 {
     int ttt = 999;
     int sock = socket(PF_INET, SOCK_STREAM, 0);
-    printf("%d\n", sock);
-    printf("AAAAA\n");
     char ip[] = "192.168.0.74";
 
     struct sockaddr_in sockip;
@@ -85,22 +81,21 @@ int readToOtherSystem()
 
     char msg[100];
     int kt;
-    int i = 0;
-    while (i < 15)
+    while (1)
     {
         kt = read(sock, msg, sizeof(msg) - 1);
         printf("%d\n", kt);
         printf("%s\n", msg);
         if (!strcmp("1", msg))
         {
-            break;
+            close(sock);
+            return 119;
         }
-        i++;
     }
     close(sock);
 }
 
-int writeToOtherSystem()
+int *writeToOtherSystem()
 {
     int serv_sock, clnt_sock = -1;
     struct sockaddr_in serv_addr, clnt_addr;
@@ -134,7 +129,7 @@ int writeToOtherSystem()
     }
 }
 
-int blockModule()
+int *blockModule()
 {
     int serv_sock, clnt_sock = -1;
     struct sockaddr_in serv_addr, clnt_addr;

@@ -10,76 +10,37 @@ int endOfSystem = 0;
 int threadfinish1 = 999;
 int threadfinish2 = 999;
 
-void transferSignalToBlockModule()//Networking
-{
-    while(threadfinish1 && threadfinish2)
-    {
-        if(threadfinish1 == 0 && threadfinish2 == 0)
-        {
-            Transfer Signal to BlockModule;
-        }
-    }
-}
-
-int *transferSignalToSystem(void *arg)
-{
-    Transfer Signal to Other System; //Networking
-}
-
-int *alert(void *arg)
-{
-    int i, j = 0;
-    wiringPiSetup() ;
-    softToneCreate(PIN) ;
-    for (i = 0 ; i < 23 ; ++i)
-    {
-        for(j = 0; j < 2; j++)
-        {
-            printf("%3d\n", j) ;
-            softToneWrite(PIN, alert[j]) ;
-            delay(200) ;
-        }
-    }
-    return 1;
-}
-
-int *waveDetection(void *arg)
-{
-    int w_Detection = 0;
-    while(w_Detection == 0)
-    {
-        if(WaveDetection)
-        {
-            w_Detection = 1;
-        }
-    }
-}
-
-int waveSignaltoOtherSystem(void *arg)
-{
-    int w_Signal = 0;
-    while(w_Signal == 0)
-    {
-        if(WaveSignaltoOtherSystem)//Networking
-        {
-            w_Signal = 1;
-        }
-    }
-}
-
 int main()
 {
-    main_socket();
+    int return_thrd1;    
+    int return_thrd2;
+    int return_EOS;
+
     pthread_t thread_1; // waveDetection, transferSignalToSystem
     pthread_t thread_2; // waveSignaltoOtherSystem, alert
+    pthread_t thread_3; // thread for server.blockModule
     
-    pthread_create(&thread_1, NULL, waveDetection, NULL);
-    pthread_create(&thread_2, NULL, waveSignaltoOtherSystem, NULL);
+    pthread_create(&thread_1, NULL, detectModule, NULL);
+    pthread_create(&thread_2, NULL, readToOtherSystem, NULL);
+    pthread_create(&thread_3, NULL, blockModule, NULL);
 
-    threadfinish1 = pthread_create(&thread_1, NULL, transferSignalToSystem, NULL);
-    threadfinish2 = pthread_create(&thread_2, NULL, alert, NULL);
+    pthread_join(thread_1, (void **)&return_thrd1);
+    pthread_join(thread_2, (void **)&return_thrd2);
 
-    transferSignalToBlockModule();
+    while(1)
+    {
+        if(return_thrd1 == 0 || return_thrd2 == 0)
+        {
+            pthread_create(&thread_1, NULL, main_buzzer, NULL);
+            pthread_create(&thread_2, NULL, main_lcd, NULL);
 
+            pthread_join(thread_1, (void **)&return_EOS);
+
+            if(return_EOS == 119)
+            {
+                return 1;
+            }
+        }
+    }
     return 0;
 }
