@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <linux/i2c-dev.h>
 #include <fcntl.h>
+#include <alert.h>
 
 #define I2C_BUS        "/dev/i2c-1" // I2C bus device on a Raspberry Pi 3
 #define I2C_ADDR       0x27         // I2C slave address for the LCD module
@@ -47,7 +48,7 @@ void i2c_send_byte(unsigned char data) {
    usleep(1000);
 }
 
-void main() { 
+void main_lcd() { 
    i2c_start(); 
 
    usleep(15000);             // wait 15msec

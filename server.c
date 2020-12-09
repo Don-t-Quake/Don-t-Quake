@@ -7,6 +7,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <network.h>
 
 #define IN 0
 #define OUT 1
@@ -25,20 +26,15 @@ void error_handling(char *message)
     exit(1);
 }
 
-int main(int argc, char *argv[])
+int main_socket()
 {
     int state = 1;
     int prev_state = 1;
-    int light = 0;
     int serv_sock, clnt_sock = -1;
     struct sockaddr_in serv_addr, clnt_addr;
     socklen_t clnt_addr_size;
     int sock = socket(PF_INET,SOCK_STREAM,0);
 
-    if (argc != 2)
-    {
-        printf("Usage : %s <port>\n", argv[0]);
-    }
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
     if (serv_sock == -1)
         error_handling("socket() error");

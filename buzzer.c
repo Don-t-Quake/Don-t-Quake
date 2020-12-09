@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <alert.h>
 
 #define IN  0
 #define OUT 1
@@ -93,7 +94,7 @@ static int GPIOWrite(int pin, int value) {
 	}
 }
 
-int main(int argc, char *argv[]) {
+int main_buzzer() {
 	int repeat = 150;
 	int state = 1;
 	int buzzer = 0;

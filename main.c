@@ -1,16 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-
-#include <wiringPi.h>
-#include <softTone.h>
+#include <network.h>
+#include <alert.h>
  
 #define PIN 28
 
 int endOfSystem = 0;
 int threadfinish1 = 999;
 int threadfinish2 = 999;
-int alert[2] = { 261, 523 };
 
 void transferSignalToBlockModule()//Networking
 {
@@ -71,6 +69,7 @@ int waveSignaltoOtherSystem(void *arg)
 
 int main()
 {
+    main_socket();
     pthread_t thread_1; // waveDetection, transferSignalToSystem
     pthread_t thread_2; // waveSignaltoOtherSystem, alert
     
