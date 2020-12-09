@@ -15,13 +15,14 @@
 #define BUFFER_MAX 1000
 #define VALUE_MAX 1000
 
+
 static int PWMUnexport(int pin)
 {
    char buffer[BUFFER_MAX];
    ssize_t bytes_written;
    int fd;
 
-   //fd = open("/sys/class/gpio/unexport", O_WRONLY);
+   fd = open("/sys/class/pwm/pwmchip0/unexport", O_WRONLY);
    if (-1 == fd) {
        fprintf(stderr, "Failed to open unexport for writing!\n");
        return(-1);
@@ -41,7 +42,7 @@ static int PWMEnable(int pin)
    char path[DIRECTION_MAX];
    int fd;
 
-   snprintf(path, DIRECTION_MAX, "%d", pin);
+   snprintf(path, DIRECTION_MAX, "/sys/class/pwm/pwmchip0/pwm%d/enable", pin);
    fd = open(path, O_WRONLY);
    if (-1 == fd) {
        fprintf(stderr, "Failed to open gpio direction for writing!\n");
@@ -60,7 +61,7 @@ static int PWMWritePeriod(int pin, int value)
    char path[VALUE_MAX];
    int fd;
 
-   snprintf(path, VALUE_MAX, "%d", pin);
+   snprintf(path, VALUE_MAX, "/sys/class/pwm/pwmchip0/pwm%d/period", pin);
    fd = open(path, O_WRONLY);
    if (-1 == fd) {
        fprintf(stderr, "Failed to open gpio value for writing!\n");
@@ -80,7 +81,7 @@ static int PWMWriteDutyCycle(int pin, int value)
    char path[VALUE_MAX];
    int fd;
 
-   snprintf(path, VALUE_MAX, "%d", pin); // write value 
+   snprintf(path, VALUE_MAX, "/sys/class/pwm/pwmchip0/pwm%d/duty_cycle", pin); // write value 
    fd = open(path, O_WRONLY);
    if (-1 == fd) {
        fprintf(stderr, "Failed to open gpio value for writing!\n");
@@ -102,7 +103,7 @@ static int PWMExport(int pin)
    ssize_t bytes_written;
    int fd;
 
-   //fd = open("/sys/class/gpio/export", O_WRONLY);
+   fd = open("/sys/class/pwm/pwmchip0/pwm%d/export", O_WRONLY);
    if (-1 == fd) {
        fprintf(stderr, "Failed to open export for writing!\n");
        return(-1);
