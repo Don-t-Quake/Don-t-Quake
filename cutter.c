@@ -112,21 +112,21 @@ static int PWMWriteDutyCycle(int pin, int value)
 
 static int PWMExport(int pin)
 {
-#define BUFFER_MAX 3
-   char buffer[BUFFER_MAX];
-   ssize_t bytes_written;
-   int fd;
 
-   fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
-   if (-1 == fd) {
-       fprintf(stderr, "Failed to open export for writing!\n");
-       return(-1);
-   }
-
-   bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
-   write(fd, buffer, bytes_written);
-   close(fd);
-   return(0);
+    char buffer[BUFFER_MAX];
+    int bytes_written;
+    int fd;
+    fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
+    if (-1 == fd)
+    {
+        fprintf(stderr, "Failed to open in export!\n");
+        return (-1);
+    }
+    bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
+    write(fd, buffer, bytes_written);
+    close(fd);
+    sleep(1);
+    return (0);
 }
 
 int main(void)
@@ -175,7 +175,7 @@ int main(void)
   pos=17.5;
   PWMWriteDutyCycle(0,pos);
   PWMEnable(0);
-  usleep(1000);
+  usleep(3000);
   // softPwmCreate(SERVO, 0, 200);
   // softPwmCreate(SERVO1, 0, 200);
   // softPwmWrite(SERVO,pos);
