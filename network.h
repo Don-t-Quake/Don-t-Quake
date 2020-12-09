@@ -2,7 +2,8 @@
 #define __SOCKET_H__
 
 int detectModule();
-int otherSystem();
+int readToOtherSystem();
+int writeToOtherSystem();
 int blockModule();
 
 #endif
