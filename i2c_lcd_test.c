@@ -4,7 +4,7 @@
 #include <fcntl.h>
 
 #define ASCIITABLESIZE 96
-#define DISPLAYSIZE 8
+#define DISPLAYSIZE 16
 #define DISPLAYLINES 2
 
 char *charlookup(char syschar)
@@ -261,28 +261,26 @@ void lcdwritestr(int line, char s[])
   char bytes[2];
   bytes[0] = 0x00;
   if (line == 1)
-    bytes[1] = 0x80; // Set display address for line 1
+    bytes[1] = 0x27; // Set display address for line 1
   if (line == 2)
-    bytes[1] = 0xc0; // Set display address for line 2
+    bytes[1] = 0x3f; // Set display address for line 2
   write(i2cFile, bytes, sizeof(bytes));
+  printf("%s\n", s);
   for (i = 0; i < DISPLAYSIZE && s[i]; i++) // Send only max chars to display
     lcdputchar(s[i]);                       // when the given string is longer
 }
 
-int main(int argc, char **argv)
+int main()
 {
-  char lcdstr[9];
-  if (argc != 3)
-    return -1;
+  char lcdstr[16];
+
   // open Linux I2C device
   i2cOpen();
 
-  // set address of the AQM0802A
-  i2cSetAddress(0x3e);
+  // set address of the LCD Device
+  i2cSetAddress(0x27);
 
-  lcdstr[5] = 'hello';
-  // handle strings that are too long
-  strncpy(lcdstr, argv[2], 8);
+  strcpy(lcdstr, "hello");
 
   // handle strings that are too short
   if (strlen(lcdstr) < DISPLAYSIZE)
@@ -292,10 +290,10 @@ int main(int argc, char **argv)
     {
       lcdstr[i] = ' ';
     }
-    lcdstr[8] = '\0';
+    lcdstr[15] = '\0';
   }
 
-  lcdwritestr(atoi(argv[1]), lcdstr);
+  lcdwritestr(1, lcdstr);
 
   // close Linux I2C device
   i2cClose();
