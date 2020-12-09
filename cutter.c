@@ -2,7 +2,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
-#include <pwd.h>
+#include "pwd.h"
 
 #define SERVO 0
 #define SERVO1 1
