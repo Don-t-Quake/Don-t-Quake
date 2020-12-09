@@ -14,6 +14,7 @@
 
 #define BUFFER_MAX 1000
 #define VALUE_MAX 1000
+#define DIRECTION_MAX 45
 
 
 static int PWMUnexport(int pin)
@@ -36,21 +37,28 @@ static int PWMUnexport(int pin)
 
 static int PWMEnable(int pin)
 {
-   static const char s_enable_str[]  = "1";
-
-#define DIRECTION_MAX 35
-   char path[DIRECTION_MAX];
-   int fd;
-
-   snprintf(path, DIRECTION_MAX, "/sys/class/pwm/pwmchip0/pwm%d/enable", pin);
-   fd = open(path, O_WRONLY);
-   if (-1 == fd) {
-       fprintf(stderr, "Failed to open gpio direction for writing!\n");
-       return(-1);
-   }
-
-   close(fd);
-   return(0);
+    static const char s_unenable_str[] = "0";
+    static const char s_enable_str[] = "1";
+    char path[DIRECTION_MAX];
+    int fd;
+    snprintf(path, DIRECTION_MAX, "/sys/class/pwm/pwmchip0/pwm%d/enable", pin);
+    fd = open(path, O_WRONLY);
+    if (-1 == fd)
+    {
+        fprintf(stderr, "Failed to open in enable!\n");
+        return -1;
+    }
+    write(fd, s_unenable_str, strlen(s_unenable_str));
+    close(fd);
+    fd = open(path, O_WRONLY);
+    if (-1 == fd)
+    {
+        fprintf(stderr, "Failed to open in enable!\n");
+        return -1;
+    }
+    write(fd, s_enable_str, strlen(s_enable_str));
+    close(fd);
+    return (0);
 }
 
 
@@ -79,21 +87,26 @@ static int PWMWritePeriod(int pin, int value)
 
 static int PWMWriteDutyCycle(int pin, int value)
 {
-   char path[VALUE_MAX];
-   int fd;
-
-   snprintf(path, VALUE_MAX, "/sys/class/pwm/pwmchip0/pwm%d/duty_cycle", pin); // write value 
-   fd = open(path, O_WRONLY);
-   if (-1 == fd) {
-       fprintf(stderr, "Failed to open gpio value for writing!\n");
-       return(-1);
-   }
-     if (1 != write(fd,path, VALUE_MAX )) {
-       return(-1);
-   }
-
-   close(fd);
-   return(0);
+   
+    char path[VALUE_MAX];
+    char s_values_str[VALUE_MAX];
+    int fd, byte;
+    snprintf(path, VALUE_MAX, "/sys/class/pwm/pwmchip0/pwm%d/duty_cycle", pin);
+    fd = open(path, O_WRONLY);
+    if (-1 == fd)
+    {
+        fprintf(stderr, "Failed to open in duty_cycle!\n");
+        return (-1);
+    }
+    byte = snprintf(s_values_str, 10, "%d", value);
+    if (-1 == write(fd, s_values_str, byte))
+    {
+        fprintf(stderr, "Failed to write value! in duty_cycle\n");
+        close(fd);
+        return (-1);
+    }
+    close(fd);
+    return (0);
 }
 
 
