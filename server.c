@@ -50,7 +50,11 @@ int main(int argc, char *argv[])
     serv_addr.sin_port = htons(8888);
     
     if (bind(serv_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1)
+    {
         error_handling("bind() error");
+        close(serv_sock);
+
+    }
 
         
     pid_t pid = fork();

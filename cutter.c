@@ -1,12 +1,18 @@
 #include <stdio.h>
-#include <wiringPi.h>
-#include <softPwm.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <pwd.h>
 
 #define SERVO 0
 #define SERVO1 1
+
+static int PWMUnexport(int pin);
+
+static int PWMEnable(int pin);
+static int PWMWritePeriod(int pin, int value);
+static int PWMWriteDutyCycle(int pin, int value);
+static int PWMExport(int pin);
 
 int main(void)
 {
@@ -49,27 +55,27 @@ int main(void)
   }
   close(sock);
 
-  if(wiringPiSetup()==-1)
-  {
-    return -1;
-  }
-  softPwmCreate(SERVO, 0, 200);
-  softPwmCreate(SERVO1, 0, 200);
-  softPwmWrite(SERVO,pos);
-  delay(1000);
+  PWMExport(0);
+  PWMWritePeriod(0,200);
   pos=17.5;
-  softPwmWrite(SERVO,pos);
-  delay(1000);
+  PWMWriteDutyCycle(0,pos);
+  PWMEnable(0);
+  // softPwmCreate(SERVO, 0, 200);
+  // softPwmCreate(SERVO1, 0, 200);
+  // softPwmWrite(SERVO,pos);
+  // delay(1000);
+  // softPwmWrite(SERVO,pos);
+  // delay(1000);
 //  pos=5;
 //  softPwmWrite(SERVO,pos);
 //  delay(1000);
 
-  pos=5;
-  softPwmWrite(SERVO1,pos);
-  delay(1000);
-  pos=17.5;
-  softPwmWrite(SERVO1,pos);
-  delay(1000);
+  // pos=5;
+  // softPwmWrite(SERVO1,pos);
+  // delay(1000);
+  // pos=17.5;
+  // softPwmWrite(SERVO1,pos);
+  // delay(1000);
 //  pos=5;
 //  softPwmWrite(SERVO1,pos);
 //  delay(1000);
