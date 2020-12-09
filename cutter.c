@@ -11,6 +11,7 @@
 int main(void)
 {
   double pos = 5;
+  int ttt;
   int sock = socket(PF_INET, SOCK_STREAM, 0);
   printf("%d\n", sock);
   printf("AAAAA\n");
@@ -20,44 +21,57 @@ int main(void)
   sockip.sin_family = AF_INET;
   sockip.sin_addr.s_addr = inet_addr(ip);
   sockip.sin_port = htons(8888);
-  int ttttttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
-  printf("%d\n",ttttttt);
+  do{
+    ttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
+  }while(ttt!=-1);
+  printf("%d\n",ttt);
   char msg[100];
-  int kt = read(sock, msg, sizeof(msg) - 1);
-  if (!strcmp("1", msg))
+  int kt;
+  while(1)
   {
-    printf("IIIIIII");
-  }
-  else
-  {
-    printf("B\n");
+    kt = read(sock, msg, sizeof(msg) - 1);
+    printf("%d\n",kt);
+    printf("%s\n",msg);
+    if(!strcmp("1",msg))
+    {
+      break;
+    }
+    //    if (!strcmp("1", msg))
+    //    {
+    //      printf("IIIIIII");
+    //    }
+    //    else
+    //    {
+    //      printf("B\n");
+    //    }
+
   }
   close(sock);
-  /* 
-    if(wiringPiSetup()==-1)
-    {
-        return -1;
-    }
-    softPwmCreate(SERVO, 0, 200);
-    softPwmCreate(SERVO1, 0, 200);
-    softPwmWrite(SERVO,pos);
-    delay(1000);
-    pos=17.5;
-    softPwmWrite(SERVO,pos);
-    delay(1000);
-    pos=5;
-    softPwmWrite(SERVO,pos);
-    delay(1000);
-    
-    pos=5;
-    softPwmWrite(SERVO1,pos);
-    delay(1000);
-    pos=17.5;
-    softPwmWrite(SERVO1,pos);
-    delay(1000);
-    pos=5;
-    softPwmWrite(SERVO1,pos);
-    delay(1000);
-*/
+
+  if(wiringPiSetup()==-1)
+  {
+    return -1;
+  }
+  softPwmCreate(SERVO, 0, 200);
+  softPwmCreate(SERVO1, 0, 200);
+  softPwmWrite(SERVO,pos);
+  delay(1000);
+  pos=17.5;
+  softPwmWrite(SERVO,pos);
+  delay(1000);
+//  pos=5;
+//  softPwmWrite(SERVO,pos);
+//  delay(1000);
+
+  pos=5;
+  softPwmWrite(SERVO1,pos);
+  delay(1000);
+  pos=17.5;
+  softPwmWrite(SERVO1,pos);
+  delay(1000);
+//  pos=5;
+//  softPwmWrite(SERVO1,pos);
+//  delay(1000);
+
   return 0;
 }
