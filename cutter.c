@@ -172,10 +172,14 @@ int main(void)
 
   PWMExport(0);
   PWMWritePeriod(0,200);
+  PWMWriteDutyCycle(0,0);
+  PWMEnable(0);
   pos=17.5;
   PWMWriteDutyCycle(0,pos);
-  PWMEnable(0);
   usleep(3000);
+  pos=5;
+  PWMWriteDutyCycle(0,pos);
+  usleep(1000);
   // softPwmCreate(SERVO, 0, 200);
   // softPwmCreate(SERVO1, 0, 200);
   // softPwmWrite(SERVO,pos);
