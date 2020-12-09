@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
         sockip.sin_addr.s_addr = inet_addr("192.168.0.87");
         sockip.sin_port = htons(8888);
         
-        while(1)
+        /*while(1)
         {
             int ttttttt = connect(sock,(struct sockaddr*)&sockip,sizeof(sockip));
             if(0==ttttttt)
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
             {
                 printf("B\n");
             }  
-        }
+        }*/
         exit(0);
     }
     else

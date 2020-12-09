@@ -21,6 +21,7 @@ int main(void)
   sockip.sin_addr.s_addr = inet_addr(ip);
   sockip.sin_port = htons(8888);
   int ttttttt = connect(sock, (struct sockaddr *)&sockip, sizeof(sockip));
+  printf("%d\n",ttttttt);
   char msg[100];
   int kt = read(sock, msg, sizeof(msg) - 1);
   if (!strcmp("1", msg))
