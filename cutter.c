@@ -42,14 +42,7 @@ static int PWMEnable(int pin)
     char path[DIRECTION_MAX];
     int fd;
     snprintf(path, DIRECTION_MAX, "/sys/class/pwm/pwmchip0/pwm%d/enable", pin);
-    fd = open(path, O_WRONLY);
-    if (-1 == fd)
-    {
-        fprintf(stderr, "Failed to open in enable!\n");
-        return -1;
-    }
-    write(fd, s_unenable_str, strlen(s_unenable_str));
-    close(fd);
+
     fd = open(path, O_WRONLY);
     if (-1 == fd)
     {
