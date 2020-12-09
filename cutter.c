@@ -56,24 +56,25 @@ static int PWMEnable(int pin)
 
 static int PWMWritePeriod(int pin, int value)
 {
-   static const char s_values_str[] = "01";
-
-   char path[VALUE_MAX];
-   int fd;
-
-   snprintf(path, VALUE_MAX, "/sys/class/pwm/pwmchip0/pwm%d/period", pin);
-   fd = open(path, O_WRONLY);
-   if (-1 == fd) {
-       fprintf(stderr, "Failed to open gpio value for writing!\n");
-       return(-1);
-   }
-
-   if (1 != write(fd, path, VALUE_MAX)) {
-       return(-1);
-   }
-
-   close(fd);
-   return(0);
+    char s_values_str[VALUE_MAX];
+    char path[VALUE_MAX];
+    int fd, byte;
+    snprintf(path, VALUE_MAX, "/sys/class/pwm/pwmchip0/pwm%d/period", pin);
+    fd = open(path, O_WRONLY);
+    if (-1 == fd)
+    {
+        fprintf(stderr, "Failed to open in period!\n");
+        return (-1);
+    }
+    byte = snprintf(s_values_str, 10, "%d", value);
+    if (-1 == write(fd, s_values_str, byte))
+    {
+        fprintf(stderr, "Failed to write value in period!\n");
+        close(fd);
+        return (-1);
+    }
+    close(fd);
+    return (0);
 }
 
 static int PWMWriteDutyCycle(int pin, int value)
@@ -103,7 +104,7 @@ static int PWMExport(int pin)
    ssize_t bytes_written;
    int fd;
 
-   fd = open("/sys/class/pwm/pwmchip0/pwm%d/export", O_WRONLY);
+   fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
    if (-1 == fd) {
        fprintf(stderr, "Failed to open export for writing!\n");
        return(-1);
