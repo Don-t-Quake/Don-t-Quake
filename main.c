@@ -23,16 +23,17 @@ int main()
    
     pthread_create(&thread_1, NULL, detectModule, NULL);
     //pthread_create(&thread_2, NULL, readToOtherSystem, NULL);
-    pthread_create(&thread_3, NULL, blockModule, NULL);
 
     pthread_join(thread_1, (void **)&return_thrd1);
-    pthread_join(thread_2, (void **)&return_thrd2);
+    //pthread_join(thread_2, (void **)&return_thrd2);
 
     while(1)
     {
         if(return_thrd1 == 0 || return_thrd2 == 0)
         {
-            //pthread_create(&thread_3, NULL, writeToOtherSystem, NULL);
+            printf("in if\n");
+            blockModule();
+            //pthread_create(&thread_4, NULL, writeToOtherSystem, NULL);
             pthread_create(&thread_1, NULL, main_buzzer, NULL);
             pthread_create(&thread_2, NULL, main_lcd, NULL);
 

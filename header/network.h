@@ -4,6 +4,6 @@
 extern int *detectModule();
 extern int *readToOtherSystem();
 extern int *writeToOtherSystem();
-extern int *blockModule();
+extern int blockModule();
 
 #endif

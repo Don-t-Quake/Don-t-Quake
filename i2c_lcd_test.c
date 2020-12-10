@@ -40,10 +40,7 @@ void i2c_send_byte(unsigned char data) {
    unsigned char byte[1];
    byte[0] = data;
    if(debug) printf(BINARY_FORMAT, BYTE_TO_BINARY(byte[0]));
-   write(i2cFile, byte, sizeof(byte)); 
-   /* -------------------------------------------------------------------- *
-    * Below wait creates 1msec delay, needed by display to catch commands  *
-    * -------------------------------------------------------------------- */
+   write(i2cFile, byte, sizeof(byte));
    usleep(1000);
 }
 
@@ -114,10 +111,11 @@ void *main_lcd() {
     * Start writing 'H' 'E' 'L' 'L' 'O' chars to the display, with BL=on.  *
     * -------------------------------------------------------------------- */
    printf("START PRINT\n");
+   /*
    i2c_send_byte(0b01001101); //
    i2c_send_byte(0b01001001); // send 0100=4
    i2c_send_byte(0b10001101); //
-   i2c_send_byte(0b10001001); // send 1000=8 = 0x48 ='H'
+   i2c_send_byte(0b00111001); // send 1000=8 = 0x48 ='H'
 
    i2c_send_byte(0b01001101); //
    i2c_send_byte(0b01001001); // send 0100=4
@@ -138,6 +136,56 @@ void *main_lcd() {
    i2c_send_byte(0b01001001); // send 0100=4
    i2c_send_byte(0b11111101); //
    i2c_send_byte(0b11111001); // send 1111=15 = 0x4F ='O'
+*/
 
+i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0100=4
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b00111001); // send 0011=5 = 0x45 ='E'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0100=4
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0001=1 = 0x41 ='A'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0101=5
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0010=2 = 0x52 ='R'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0101=5
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0100=4 = 0x54 ='T'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0100=4
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 1000=8 = 0x48 ='H'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0101=5
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0001=1 = 0x51 ='Q'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0101=5
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0101=5 = 0x55 ='U'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0100=4
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0001=1 = 0x41 ='A'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0100=4
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 1011=15 = 0x4B ='K'
+
+   i2c_send_byte(0b01001101); //
+   i2c_send_byte(0b01001001); // send 0100=4
+   i2c_send_byte(0b11111101); //
+   i2c_send_byte(0b11111001); // send 0101=5 = 0x45 ='E'
    i2c_stop(); 
 }
