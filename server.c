@@ -30,7 +30,7 @@ int *detectModule()
     printf("detectmodule\n");
     int ttt = 999;
     int sock = socket(PF_INET, SOCK_STREAM, 0);
-    char ip[] = "192.168.0.97";
+    char ip[] = "192.168.0.99";
 
     struct sockaddr_in sockip;
     memset(&sockip, 0, sizeof(sockip));
