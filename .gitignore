@@ -1,0 +1,8 @@
+.DS_Store
+*.o
+server
+i2c_lcd_test
+buzzer
+main
+server_backup
+server_write

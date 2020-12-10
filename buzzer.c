@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <alert.h>
 
 #define IN  0
 #define OUT 1

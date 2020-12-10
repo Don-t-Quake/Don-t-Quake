@@ -3,10 +3,9 @@
 #include <unistd.h>
 #include <linux/i2c-dev.h>
 #include <fcntl.h>
-#include <alert.h>
 
-#define I2C_BUS        "/dev/i2c-1" // I2C bus device on a Raspberry Pi 3
-#define I2C_ADDR       0x27         // I2C slave address for the LCD module
+#define I2C_BUS        "/dev/i2c-1"
+#define I2C_ADDR       0x27
 #define BINARY_FORMAT  " %c  %c  %c  %c  %c  %c  %c  %c\n"
 #define BYTE_TO_BINARY(byte) \
   (byte & 0x80 ? '1' : '0'), \
@@ -114,6 +113,7 @@ void *main_lcd() {
    /* -------------------------------------------------------------------- *
     * Start writing 'H' 'E' 'L' 'L' 'O' chars to the display, with BL=on.  *
     * -------------------------------------------------------------------- */
+   printf("START PRINT\n");
    i2c_send_byte(0b01001101); //
    i2c_send_byte(0b01001001); // send 0100=4
    i2c_send_byte(0b10001101); //

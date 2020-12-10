@@ -46,7 +46,7 @@ int *detectModule()
     char msg[100];
     int kt;
     int i = 0;
-    while (1))
+    while (1)
     {
         kt = read(sock, msg, sizeof(msg) - 1);
         printf("%d\n", kt);
@@ -120,7 +120,7 @@ int *writeToOtherSystem()
         if (clnt_sock == -1)
             error_handling("accept() error");
     }
-    char msg[100] = "0";
+    char msg[100] = "1";
     while (1)
     {
         scanf("%s", msg);
@@ -160,10 +160,9 @@ int *blockModule()
         if (clnt_sock == -1)
             error_handling("accept() error");
     }
-    char msg[100] = "0";
+    char msg[100] = "1";
     while (1)
     {
-        scanf("%s", msg);
         write(clnt_sock, msg, sizeof(msg));
         printf("msg = %s\n", msg);
     }

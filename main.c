@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <network.h>
-#include <alert.h>
+#include "header/network.h"
+#include "header/alert.h"
  
 #define PIN 28
 
@@ -19,9 +19,10 @@ int main()
     pthread_t thread_1; // waveDetection, transferSignalToSystem
     pthread_t thread_2; // waveSignaltoOtherSystem, alert
     pthread_t thread_3; // thread for server.blockModule
-    
+    pthread_t thread_4; // thread for writeToOtherSystem
+   
     pthread_create(&thread_1, NULL, detectModule, NULL);
-    pthread_create(&thread_2, NULL, readToOtherSystem, NULL);
+    //pthread_create(&thread_2, NULL, readToOtherSystem, NULL);
     pthread_create(&thread_3, NULL, blockModule, NULL);
 
     pthread_join(thread_1, (void **)&return_thrd1);
@@ -31,15 +32,19 @@ int main()
     {
         if(return_thrd1 == 0 || return_thrd2 == 0)
         {
+            //pthread_create(&thread_3, NULL, writeToOtherSystem, NULL);
             pthread_create(&thread_1, NULL, main_buzzer, NULL);
             pthread_create(&thread_2, NULL, main_lcd, NULL);
 
             pthread_join(thread_1, (void **)&return_EOS);
 
-            if(return_EOS == 119)
+            while(return_EOS != 119)
             {
-                return 1;
+                sleep(0.1);
             }
+            pthread_exit(thread_3);
+            pthread_create(&thread_3, NULL, blockModule, NULL);
+            return 1;
         }
     }
     return 0;
