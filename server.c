@@ -142,6 +142,7 @@ int *writeToOtherSystem()
 
 int blockModule()
 {
+    printf("blockmodule\n");
     int serv_sock, clnt_sock = -1;
     struct sockaddr_in serv_addr, clnt_addr;
     socklen_t clnt_addr_size;
@@ -173,11 +174,12 @@ int blockModule()
             error_handling("accept() error");
     }
     char msg[100] = "1";
+    
     //for(int i = 0; i < 100; i++)
-    {
+    //{
         write(clnt_sock, msg, sizeof(msg));
         printf("msg = %s\n", msg);
         usleep(1000);
-    }
+    //}
     close(serv_sock);
 }

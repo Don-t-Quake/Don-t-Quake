@@ -16,10 +16,8 @@ int main()
     int return_thrd2;
     int return_EOS;
 
-    pthread_t thread_1; // waveDetection, transferSignalToSystem
-    pthread_t thread_2; // waveSignaltoOtherSystem, alert
-    pthread_t thread_3; // thread for server.blockModule
-    pthread_t thread_4; // thread for writeToOtherSystem
+    pthread_t thread_1; // etc
+    pthread_t thread_2; // OtherSystem
    
     pthread_create(&thread_1, NULL, detectModule, NULL);
     //pthread_create(&thread_2, NULL, readToOtherSystem, NULL);
@@ -33,18 +31,12 @@ int main()
         {
             printf("in if\n");
             blockModule();
-            //pthread_create(&thread_4, NULL, writeToOtherSystem, NULL);
-            pthread_create(&thread_1, NULL, main_buzzer, NULL);
-            pthread_create(&thread_2, NULL, main_lcd, NULL);
-
-            pthread_join(thread_1, (void **)&return_EOS);
-
-            while(return_EOS != 119)
-            {
-                sleep(0.1);
-            }
-            pthread_exit(thread_3);
-            pthread_create(&thread_3, NULL, blockModule, NULL);
+            //pthread_create(&thread_2, NULL, writeToOtherSystem, NULL);
+            pthread_create(&thread_1, NULL, main_lcd, NULL);
+            return_EOS= main_buzzer();
+            printf("%d\n", return_EOS);
+            printf("pthread\n");
+            blockModule();
             return 1;
         }
     }

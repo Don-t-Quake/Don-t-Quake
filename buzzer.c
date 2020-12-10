@@ -115,11 +115,8 @@ int *main_buzzer() {
 		usleep(500 * 100);
 	}
 	while (repeat--);
-	
-	//Disable GPIO pins
-	if (-1 == GPIOUnexport(POUT))
-		return(4);
 
+	
+	GPIOWrite(POUT, 0); // Disable
 	return 119;
 }
-
