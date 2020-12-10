@@ -33,7 +33,7 @@ int main()
             blockModule();
             //pthread_create(&thread_2, NULL, writeToOtherSystem, NULL);
             pthread_create(&thread_1, NULL, main_lcd, NULL);
-            return_EOS= main_buzzer();
+            return_EOS = main_buzzer();
             printf("%d\n", return_EOS);
             printf("pthread\n");
             blockModule();
