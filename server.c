@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
@@ -18,6 +19,10 @@
 #define BUFFER_MAX 3
 #define DIRECTION_MAX 45
 
+int check=0;
+    pthread_t thread_1; // etc
+    pthread_t thread_2; // OtherSystem
+
 void error_handling(char *message)
 {
     fputs(message, stderr);
@@ -27,6 +32,9 @@ void error_handling(char *message)
 
 int *detectModule()
 {
+    // pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    // pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
+
     printf("detectmodule\n");
     int ttt = 999;
     int sock = socket(PF_INET, SOCK_STREAM, 0);
@@ -54,8 +62,16 @@ int *detectModule()
         printf("%s\n", msg);
         if (!strcmp("1", msg))
         {
+            check=1;
             close(sock);
             return 119;
+        }
+        if(check)
+        {
+            usleep(1000);
+            pthread_cancel(thread_2);
+            pthread_exit(0);
+
         }
     }
     close(sock);
@@ -63,10 +79,12 @@ int *detectModule()
 
 int *readToOtherSystem()
 {
-    printf("readtoOS\n");
+    // pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    // pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
     int ttt = 999;
     int sock = socket(PF_INET, SOCK_STREAM, 0);
     char ip[] = "192.168.0.74";
+    printf("readtoOS\n");
 
     struct sockaddr_in sockip;
     memset(&sockip, 0, sizeof(sockip));
@@ -91,8 +109,15 @@ int *readToOtherSystem()
         printf("%s\n", msg);
         if (!strcmp("1", msg))
         {
+            check=1;
             close(sock);
             return 119;
+        }
+        if(check)
+        {
+            usleep(1000);
+            pthread_cancel(thread_1);
+            pthread_exit(0);
         }
     }
     close(sock);
