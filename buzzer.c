@@ -107,17 +107,14 @@ int *main_buzzer() {
 
 	do {
 		state = 1;
-
 		if(state == 1){
 			buzzer = (buzzer+1)%2;
 			GPIOWrite(POUT, buzzer);
 		}
-
 		usleep(500 * 100);
 	}
 	while (repeat--);
 
-	
 	GPIOWrite(POUT, 0); // Disable
 	return 119;
 }
