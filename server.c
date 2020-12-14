@@ -20,8 +20,8 @@
 #define DIRECTION_MAX 45
 
 int check=0;
-    pthread_t thread_1; // etc
-    pthread_t thread_2; // OtherSystem
+pthread_t thread_1; // etc
+pthread_t thread_2; // OtherSystem
 
 void error_handling(char *message)
 {
@@ -64,7 +64,8 @@ int *detectModule()
         {
             check=1;
             close(sock);
-            return 119;
+            pthread_cancel(thread_2);
+            pthread_exit(119);
         }
         if(check)
         {
@@ -111,7 +112,8 @@ int *readToOtherSystem()
         {
             check=1;
             close(sock);
-            return 119;
+            pthread_cancel(thread_1);
+            pthread_exit(119);
         }
         if(check)
         {
@@ -125,31 +127,38 @@ int *readToOtherSystem()
 
 int *writeToOtherSystem()
 {
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    printf("tlqkf\n");
     int serv_sock, clnt_sock = -1;
     struct sockaddr_in serv_addr, clnt_addr;
     socklen_t clnt_addr_size;
-    int sock = socket(PF_INET, SOCK_STREAM, 0);
+    printf("tlqkf\n");
 
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
     if (serv_sock == -1)
         error_handling("socket() error");
 
+    printf("tlqkf\n");
     memset(&serv_addr, 0, sizeof(serv_addr));
 
+    printf("tlqkf\n");
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(8888);
+    printf("tlqkf\n");
 
     if (bind(serv_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1)
         error_handling("bind() error");
 
     int kk = 0;
     int a = listen(serv_sock, 5);
+    printf("tlqkf\n");
     if (a == -1)
         error_handling("listen() error");
 
     if (clnt_sock < 0)
     {
+    printf("tlqkf\n");
         clnt_addr_size = sizeof(clnt_addr);
         clnt_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr, &clnt_addr_size);
         printf("%d\n", clnt_addr.sin_addr.s_addr);
@@ -159,6 +168,7 @@ int *writeToOtherSystem()
     char msg[100] = "1";
     while (1)
     {
+    printf("tlqkf\n");
         scanf("%s", msg);
         write(clnt_sock, msg, sizeof(msg));
         printf("msg = %s\n", msg);

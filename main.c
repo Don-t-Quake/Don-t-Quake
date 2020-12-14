@@ -12,6 +12,7 @@ int threadfinish2 = 999;
 
 int main()
 {
+    pthread_t thread_3;
     int return_thrd1;
     int return_thrd2;
     int return_EOS;
@@ -24,7 +25,9 @@ int main()
 
     printf("dasdas\n");
     //blockModule();
-    pthread_create(&thread_2, NULL, writeToOtherSystem, NULL);
+    sleep(1);
+    pthread_create(&thread_3, NULL, writeToOtherSystem, NULL);
+    pthread_join(thread_3, NULL);
     //pthread_create(&thread_1, NULL, main_lcd, NULL);
     //return_EOS = main_buzzer();
     //printf("%d\n", return_EOS);
